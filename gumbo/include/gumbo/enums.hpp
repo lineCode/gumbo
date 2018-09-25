@@ -2,7 +2,7 @@
 
 namespace beak::gumbo {
 
-enum class Tag
+enum class tag
 {
     HTML,
     HEAD,
@@ -158,7 +158,7 @@ enum class Tag
     Last
 };
 
-enum class AttributeNamespace
+enum class attribute_namespace
 {
     None,
     XLink,
@@ -166,7 +166,7 @@ enum class AttributeNamespace
     XMLNS,
 };
 
-enum class NodeType
+enum class node_type
 {
     Document,
     Element,
@@ -177,23 +177,23 @@ enum class NodeType
     Template,
 };
 
-enum class DocTypeQuirksMode
+enum class doctype_quirks_mode
 {
     NoQuirks,
     Quirks,
     LimitedQuicks,
 };
 
-enum class WebNamespace
+enum class web_namespace
 {
     HTML,
     SVG,
     MATHML
 };
 
-namespace ParseFlags {
+namespace parse_flags {
 
-enum Flags : unsigned int
+enum flags : unsigned int
 {
     InsertionNormal = 0,
     InsertionByParser = 1 << 0,
@@ -207,6 +207,6 @@ enum Flags : unsigned int
     InsertionAdoptionAgencyMoved = 1 << 9,
     InsertionFosterParented = 1 << 10
 };
-} // namespace ParseFlags
+} // namespace parse_flags
 
 } // namespace beak::gumbo

@@ -39,14 +39,6 @@ boost::optional<const GumboVector&> get_children(const GumboNode& node)
     throw std::runtime_error("unhandled node type");
 }
 
-source_position to_source_position(GumboSourcePosition pos)
-{
-    return source_position{
-        static_cast<int>(pos.line),
-        static_cast<int>(pos.column),
-        static_cast<int>(pos.offset)};
-}
-
 std::variant<document, text, element> get_node_type(const GumboNode& node)
 {
     switch (node.type) {
@@ -58,7 +50,7 @@ std::variant<document, text, element> get_node_type(const GumboNode& node)
                     return document::doc_type{
                         d.name, d.public_identifier, d.system_identifier};
                 }(),
-                static_cast<DocTypeQuirksMode>(d.doc_type_quirks_mode)};
+                static_cast<doctype_quirks_mode>(d.doc_type_quirks_mode)};
         }
         case GUMBO_NODE_ELEMENT:
         case GUMBO_NODE_TEMPLATE: {
@@ -68,24 +60,18 @@ std::variant<document, text, element> get_node_type(const GumboNode& node)
             for (int i = 0; i < static_cast<int>(e.attributes.length); ++i) {
                 const auto a = static_cast<GumboAttribute*>(e.attributes.data[i]);
                 attributes.push_back(element::attribute{
-                    static_cast<AttributeNamespace>(a->attr_namespace),
+                    static_cast<attribute_namespace>(a->attr_namespace),
                     std::string{a->name},
                     std::string_view{a->original_name.data, a->original_name.length},
                     std::string{a->value},
-                    std::string_view{a->original_value.data, a->original_value.length},
-                    to_source_position(a->name_start),
-                    to_source_position(a->name_end),
-                    to_source_position(a->value_start),
-                    to_source_position(a->value_end)});
+                    std::string_view{a->original_value.data, a->original_value.length}});
             }
             return element{
-                static_cast<NodeType>(node.type),
-                static_cast<Tag>(e.tag),
-                static_cast<WebNamespace>(e.tag_namespace),
+                static_cast<node_type>(node.type),
+                static_cast<tag>(e.tag),
+                static_cast<web_namespace>(e.tag_namespace),
                 std::string_view{e.original_tag.data, e.original_tag.length},
-                to_source_position(e.start_pos),
                 std::string_view{e.original_end_tag.data, e.original_end_tag.length},
-                to_source_position(e.end_pos),
                 std::move(attributes)};
         }
         case GUMBO_NODE_TEXT:
@@ -94,26 +80,10 @@ std::variant<document, text, element> get_node_type(const GumboNode& node)
         case GUMBO_NODE_WHITESPACE: {
             const auto& t = node.v.text;
             return text{
-                static_cast<NodeType>(node.type),
+                static_cast<node_type>(node.type),
                 t.text,
-                std::string_view{t.original_text.data, t.original_text.length},
-                to_source_position(t.start_pos)};
+                std::string_view{t.original_text.data, t.original_text.length}};
         }
-    }
-    assert(false);
-    throw std::runtime_error("unhandled node type");
-}
-
-source_position get_source_position(const GumboNode& node)
-{
-    switch (node.type) {
-        case GUMBO_NODE_DOCUMENT: return source_position{0, 0, 0};
-        case GUMBO_NODE_ELEMENT:
-        case GUMBO_NODE_TEMPLATE: return to_source_position(node.v.element.start_pos);
-        case GUMBO_NODE_TEXT:
-        case GUMBO_NODE_CDATA:
-        case GUMBO_NODE_COMMENT:
-        case GUMBO_NODE_WHITESPACE: return to_source_position(node.v.text.start_pos);
     }
     assert(false);
     throw std::runtime_error("unhandled node type");
@@ -122,7 +92,7 @@ source_position get_source_position(const GumboNode& node)
 parse_output::tree_type traverse(const GumboNode& root)
 {
     using tree_type = parse_output::tree_type;
-    tree_type tree{node{boost::none, ParseFlags::Flags{0}, get_node_type(root)}};
+    tree_type tree{node{boost::none, parse_flags::flags{0}, get_node_type(root)}};
     const auto children = get_children(root);
     if (!children) return tree;
     for (int i = 0; i < static_cast<int>(children->length); ++i) {

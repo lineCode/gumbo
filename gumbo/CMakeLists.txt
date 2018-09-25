@@ -40,6 +40,7 @@ set(S src)
 set(LIB_FILES
     ${H}/enums.hpp
     ${H}/gumbo.hpp ${S}/gumbo.cpp
+    ${H}/detail/ptree_node_helpers.hpp ${S}/detail/ptree_node_helpers.cpp
 )
 
 ################################################

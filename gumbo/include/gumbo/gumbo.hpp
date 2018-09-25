@@ -1,21 +1,14 @@
 #pragma once
-#include <iosfwd>
 #include <string>
 #include <string_view>
 #include <variant>
 #include <vector>
 #include <boost/optional.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include "gumbo/detail/ptree_node_helpers.hpp"
 #include "gumbo/enums.hpp"
 
 namespace beak::gumbo {
-
-struct source_position
-{
-    int _line;
-    int _column;
-    int _offset;
-};
 
 struct document
 {
@@ -27,46 +20,39 @@ struct document
     };
 
     boost::optional<doc_type> _doc_type;
-    DocTypeQuirksMode _doc_type_quicks_mode;
+    doctype_quirks_mode _doc_type_quicks_mode;
 };
 
 struct text
 {
-    NodeType _node_type;
+    node_type _node_type;
     std::string _text;
     std::string_view _original_text;
-    source_position _start_position;
 };
 
 struct element
 {
     struct attribute
     {
-        AttributeNamespace _attribute_namespace;
+        attribute_namespace _attribute_namespace;
         std::string _name;
         std::string_view _original_name;
         std::string _value;
         std::string_view _original_value;
-        source_position _name_start;
-        source_position _name_end;
-        source_position _value_start;
-        source_position _value_end;
     };
 
-    NodeType _node_type;
-    Tag _tag;
-    WebNamespace _tag_namespace;
+    node_type _node_type;
+    tag _tag;
+    web_namespace _tag_namespace;
     std::string_view _original_tag;
-    source_position _start_position;
     std::string_view _original_end_tag;
-    source_position _end_position;
     std::vector<attribute> _attributes;
 };
 
 struct node
 {
     boost::optional<node&> _parent;
-    ParseFlags::Flags _parse_flags;
+    parse_flags::flags _parse_flags;
     std::variant<document, text, element> _value;
     bool empty() const;
 };
@@ -75,8 +61,8 @@ struct parse_options
 {
     bool _stop_on_first_error{false};
     boost::optional<int> _max_errors;
-    Tag _fragment_context{Tag::Last};
-    WebNamespace _web_namespace{WebNamespace::HTML};
+    tag _fragment_context{tag::Last};
+    web_namespace _web_namespace{web_namespace::HTML};
 };
 
 struct parse_output
@@ -88,6 +74,5 @@ struct parse_output
 private:
     const tree_type _tree;
 };
-//std::ostream& operator<<(std::ostream& os, const parse_output::tree_type&);
 
 } // namespace beak::gumbo

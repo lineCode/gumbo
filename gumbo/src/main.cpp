@@ -6,45 +6,6 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include "gumbo/gumbo.hpp"
 
-namespace boost::property_tree {
-template <typename... Ts>
-struct overloaded : Ts...
-{
-    using Ts::operator()...;
-};
-template <typename... Ts>
-overloaded(Ts...)->overloaded<Ts...>;
-
-struct gumbo_node_translator
-{
-    using internal_type = beak::gumbo::node;
-    using external_type = std::string;
-
-    boost::optional<std::string> get_value(const beak::gumbo::node& n) const
-    {
-        std::stringstream ss;
-        std::visit(
-            overloaded{
-                [&](const beak::gumbo::text& t) { ss << t._original_text; },
-                [](const beak::gumbo::element&) {},
-                [](const beak::gumbo::document&) {}},
-            n._value);
-        return ss.str();
-    }
-
-    boost::optional<beak::gumbo::node> put_value(const std::string&) const
-    {
-        return boost::none;
-    }
-};
-
-template <>
-struct translator_between<beak::gumbo::node, std::string>
-{
-    using type = gumbo_node_translator;
-};
-
-} // namespace boost::property_tree
 int main(int argc, const char* argv[])
 {
     assert(argc > 1);

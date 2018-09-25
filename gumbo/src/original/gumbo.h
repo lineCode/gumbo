@@ -14,6 +14,11 @@
 //
 // Author: jdtang@google.com (Jonathan Tang)
 //
+// Notice of Modification (25th September, 2018):
+//      This file has been modified to move the tag enums from a separate
+//      file into this one.
+// Author of Modifications: Barath Kannan
+//
 // We use Gumbo as a prefix for types, gumbo_ as a prefix for functions, and
 // GUMBO_ as a prefix for enum constants (static constants get the Google-style
 // kGumbo prefix).
@@ -64,10 +69,11 @@ extern "C" {
  * buffer of bytes), while the column field is often used to reference a
  * particular column on a printable display, which nowadays is usually UTF-8.
  */
-typedef struct {
-  unsigned int line;
-  unsigned int column;
-  unsigned int offset;
+typedef struct
+{
+    unsigned int line;
+    unsigned int column;
+    unsigned int offset;
 } GumboSourcePosition;
 
 /**
@@ -85,12 +91,13 @@ extern const GumboSourcePosition kGumboEmptySourcePosition;
  * Clients should assume that it is not NUL-terminated, and should always use
  * explicit lengths when manipulating them.
  */
-typedef struct {
-  /** A pointer to the beginning of the string.  NULL iff length == 0. */
-  const char* data;
+typedef struct
+{
+    /** A pointer to the beginning of the string.  NULL iff length == 0. */
+    const char* data;
 
-  /** The length of the string fragment, in bytes.  May be zero. */
-  size_t length;
+    /** The length of the string fragment, in bytes.  May be zero. */
+    size_t length;
 } GumboStringPiece;
 
 /** A constant to represent a 0-length null string. */
@@ -101,14 +108,16 @@ extern const GumboStringPiece kGumboEmptyString;
  * otherwise.
  */
 bool gumbo_string_equals(
-    const GumboStringPiece* str1, const GumboStringPiece* str2);
+    const GumboStringPiece* str1,
+    const GumboStringPiece* str2);
 
 /**
  * Compares two GumboStringPieces ignoring case, and returns true if they're
  * equal or false otherwise.
  */
 bool gumbo_string_equals_ignore_case(
-    const GumboStringPiece* str1, const GumboStringPiece* str2);
+    const GumboStringPiece* str1,
+    const GumboStringPiece* str2);
 
 /**
  * A simple vector implementation.  This stores a pointer to a data array and a
@@ -119,17 +128,18 @@ bool gumbo_string_equals_ignore_case(
  * library.  Iteration can be done through inspecting the structure directly in
  * a for-loop.
  */
-typedef struct {
-  /** Data elements.  This points to a dynamically-allocated array of capacity
+typedef struct
+{
+    /** Data elements.  This points to a dynamically-allocated array of capacity
    * elements, each a void* to the element itself.
    */
-  void** data;
+    void** data;
 
-  /** Number of elements currently in the vector. */
-  unsigned int length;
+    /** Number of elements currently in the vector. */
+    unsigned int length;
 
-  /** Current array capacity. */
-  unsigned int capacity;
+    /** Current array capacity. */
+    unsigned int capacity;
 } GumboVector;
 
 /** An empty (0-length, 0-capacity) GumboVector. */
@@ -153,15 +163,165 @@ int gumbo_vector_index_of(GumboVector* vector, const void* element);
  * efficiency benefits, by letting the parser work with enums instead of
  * strings.
  */
-typedef enum {
-// Load all the tags from an external source, generated from tag.in.
-#include "tag_enum.h"
-  // Used for all tags that don't have special handling in HTML.  Add new tags
-  // to the end of tag.in so as to preserve backwards-compatibility.
-  GUMBO_TAG_UNKNOWN,
-  // A marker value to indicate the end of the enum, for iterating over it.
-  // Also used as the terminator for varargs functions that take tags.
-  GUMBO_TAG_LAST,
+typedef enum
+{
+    GUMBO_TAG_HTML,
+    GUMBO_TAG_HEAD,
+    GUMBO_TAG_TITLE,
+    GUMBO_TAG_BASE,
+    GUMBO_TAG_LINK,
+    GUMBO_TAG_META,
+    GUMBO_TAG_STYLE,
+    GUMBO_TAG_SCRIPT,
+    GUMBO_TAG_NOSCRIPT,
+    GUMBO_TAG_TEMPLATE,
+    GUMBO_TAG_BODY,
+    GUMBO_TAG_ARTICLE,
+    GUMBO_TAG_SECTION,
+    GUMBO_TAG_NAV,
+    GUMBO_TAG_ASIDE,
+    GUMBO_TAG_H1,
+    GUMBO_TAG_H2,
+    GUMBO_TAG_H3,
+    GUMBO_TAG_H4,
+    GUMBO_TAG_H5,
+    GUMBO_TAG_H6,
+    GUMBO_TAG_HGROUP,
+    GUMBO_TAG_HEADER,
+    GUMBO_TAG_FOOTER,
+    GUMBO_TAG_ADDRESS,
+    GUMBO_TAG_P,
+    GUMBO_TAG_HR,
+    GUMBO_TAG_PRE,
+    GUMBO_TAG_BLOCKQUOTE,
+    GUMBO_TAG_OL,
+    GUMBO_TAG_UL,
+    GUMBO_TAG_LI,
+    GUMBO_TAG_DL,
+    GUMBO_TAG_DT,
+    GUMBO_TAG_DD,
+    GUMBO_TAG_FIGURE,
+    GUMBO_TAG_FIGCAPTION,
+    GUMBO_TAG_MAIN,
+    GUMBO_TAG_DIV,
+    GUMBO_TAG_A,
+    GUMBO_TAG_EM,
+    GUMBO_TAG_STRONG,
+    GUMBO_TAG_SMALL,
+    GUMBO_TAG_S,
+    GUMBO_TAG_CITE,
+    GUMBO_TAG_Q,
+    GUMBO_TAG_DFN,
+    GUMBO_TAG_ABBR,
+    GUMBO_TAG_DATA,
+    GUMBO_TAG_TIME,
+    GUMBO_TAG_CODE,
+    GUMBO_TAG_VAR,
+    GUMBO_TAG_SAMP,
+    GUMBO_TAG_KBD,
+    GUMBO_TAG_SUB,
+    GUMBO_TAG_SUP,
+    GUMBO_TAG_I,
+    GUMBO_TAG_B,
+    GUMBO_TAG_U,
+    GUMBO_TAG_MARK,
+    GUMBO_TAG_RUBY,
+    GUMBO_TAG_RT,
+    GUMBO_TAG_RP,
+    GUMBO_TAG_BDI,
+    GUMBO_TAG_BDO,
+    GUMBO_TAG_SPAN,
+    GUMBO_TAG_BR,
+    GUMBO_TAG_WBR,
+    GUMBO_TAG_INS,
+    GUMBO_TAG_DEL,
+    GUMBO_TAG_IMAGE,
+    GUMBO_TAG_IMG,
+    GUMBO_TAG_IFRAME,
+    GUMBO_TAG_EMBED,
+    GUMBO_TAG_OBJECT,
+    GUMBO_TAG_PARAM,
+    GUMBO_TAG_VIDEO,
+    GUMBO_TAG_AUDIO,
+    GUMBO_TAG_SOURCE,
+    GUMBO_TAG_TRACK,
+    GUMBO_TAG_CANVAS,
+    GUMBO_TAG_MAP,
+    GUMBO_TAG_AREA,
+    GUMBO_TAG_MATH,
+    GUMBO_TAG_MI,
+    GUMBO_TAG_MO,
+    GUMBO_TAG_MN,
+    GUMBO_TAG_MS,
+    GUMBO_TAG_MTEXT,
+    GUMBO_TAG_MGLYPH,
+    GUMBO_TAG_MALIGNMARK,
+    GUMBO_TAG_ANNOTATION_XML,
+    GUMBO_TAG_SVG,
+    GUMBO_TAG_FOREIGNOBJECT,
+    GUMBO_TAG_DESC,
+    GUMBO_TAG_TABLE,
+    GUMBO_TAG_CAPTION,
+    GUMBO_TAG_COLGROUP,
+    GUMBO_TAG_COL,
+    GUMBO_TAG_TBODY,
+    GUMBO_TAG_THEAD,
+    GUMBO_TAG_TFOOT,
+    GUMBO_TAG_TR,
+    GUMBO_TAG_TD,
+    GUMBO_TAG_TH,
+    GUMBO_TAG_FORM,
+    GUMBO_TAG_FIELDSET,
+    GUMBO_TAG_LEGEND,
+    GUMBO_TAG_LABEL,
+    GUMBO_TAG_INPUT,
+    GUMBO_TAG_BUTTON,
+    GUMBO_TAG_SELECT,
+    GUMBO_TAG_DATALIST,
+    GUMBO_TAG_OPTGROUP,
+    GUMBO_TAG_OPTION,
+    GUMBO_TAG_TEXTAREA,
+    GUMBO_TAG_KEYGEN,
+    GUMBO_TAG_OUTPUT,
+    GUMBO_TAG_PROGRESS,
+    GUMBO_TAG_METER,
+    GUMBO_TAG_DETAILS,
+    GUMBO_TAG_SUMMARY,
+    GUMBO_TAG_MENU,
+    GUMBO_TAG_MENUITEM,
+    GUMBO_TAG_APPLET,
+    GUMBO_TAG_ACRONYM,
+    GUMBO_TAG_BGSOUND,
+    GUMBO_TAG_DIR,
+    GUMBO_TAG_FRAME,
+    GUMBO_TAG_FRAMESET,
+    GUMBO_TAG_NOFRAMES,
+    GUMBO_TAG_ISINDEX,
+    GUMBO_TAG_LISTING,
+    GUMBO_TAG_XMP,
+    GUMBO_TAG_NEXTID,
+    GUMBO_TAG_NOEMBED,
+    GUMBO_TAG_PLAINTEXT,
+    GUMBO_TAG_RB,
+    GUMBO_TAG_STRIKE,
+    GUMBO_TAG_BASEFONT,
+    GUMBO_TAG_BIG,
+    GUMBO_TAG_BLINK,
+    GUMBO_TAG_CENTER,
+    GUMBO_TAG_FONT,
+    GUMBO_TAG_MARQUEE,
+    GUMBO_TAG_MULTICOL,
+    GUMBO_TAG_NOBR,
+    GUMBO_TAG_SPACER,
+    GUMBO_TAG_TT,
+    GUMBO_TAG_RTC,
+
+    // Used for all tags that don't have special handling in HTML.  Add new tags
+    // to the end of tag.in so as to preserve backwards-compatibility.
+    GUMBO_TAG_UNKNOWN,
+    // A marker value to indicate the end of the enum, for iterating over it.
+    // Also used as the terminator for varargs functions that take tags.
+    GUMBO_TAG_LAST,
 } GumboTag;
 
 /**
@@ -209,11 +369,12 @@ GumboTag gumbo_tagn_enum(const char* tagname, unsigned int length);
  * HTML includes special handling for XLink, XML, and XMLNS namespaces on
  * attributes.  Everything else goes in the generic "NONE" namespace.
  */
-typedef enum {
-  GUMBO_ATTR_NAMESPACE_NONE,
-  GUMBO_ATTR_NAMESPACE_XLINK,
-  GUMBO_ATTR_NAMESPACE_XML,
-  GUMBO_ATTR_NAMESPACE_XMLNS,
+typedef enum
+{
+    GUMBO_ATTR_NAMESPACE_NONE,
+    GUMBO_ATTR_NAMESPACE_XLINK,
+    GUMBO_ATTR_NAMESPACE_XML,
+    GUMBO_ATTR_NAMESPACE_XMLNS,
 } GumboAttributeNamespaceEnum;
 
 /**
@@ -221,36 +382,37 @@ typedef enum {
  * name-value pair, but also includes information about source locations and
  * original source text.
  */
-typedef struct {
-  /**
+typedef struct
+{
+    /**
    * The namespace for the attribute.  This will usually be
    * GUMBO_ATTR_NAMESPACE_NONE, but some XLink/XMLNS/XML attributes take special
    * values, per:
    * http://www.whatwg.org/specs/web-apps/current-work/multipage/tree-construction.html#adjust-foreign-attributes
    */
-  GumboAttributeNamespaceEnum attr_namespace;
+    GumboAttributeNamespaceEnum attr_namespace;
 
-  /**
+    /**
    * The name of the attribute.  This is in a freshly-allocated buffer to deal
    * with case-normalization, and is null-terminated.
    */
-  const char* name;
+    const char* name;
 
-  /**
+    /**
    * The original text of the attribute name, as a pointer into the original
    * source buffer.
    */
-  GumboStringPiece original_name;
+    GumboStringPiece original_name;
 
-  /**
+    /**
    * The value of the attribute.  This is in a freshly-allocated buffer to deal
    * with unescaping, and is null-terminated.  It does not include any quotes
    * that surround the attribute.  If the attribute has no value (for example,
    * 'selected' on a checkbox), this will be an empty string.
    */
-  const char* value;
+    const char* value;
 
-  /**
+    /**
    * The original text of the value of the attribute.  This points into the
    * original source buffer.  It includes any quotes that surround the
    * attribute, and you can look at original_value.data[0] and
@@ -258,23 +420,23 @@ typedef struct {
    * characters were.  If the attribute has no value, this will be a 0-length
    * string.
    */
-  GumboStringPiece original_value;
+    GumboStringPiece original_value;
 
-  /** The starting position of the attribute name. */
-  GumboSourcePosition name_start;
+    /** The starting position of the attribute name. */
+    GumboSourcePosition name_start;
 
-  /**
+    /**
    * The ending position of the attribute name.  This is not always derivable
    * from the starting position of the value because of the possibility of
    * whitespace around the = sign.
    */
-  GumboSourcePosition name_end;
+    GumboSourcePosition name_end;
 
-  /** The starting position of the attribute value. */
-  GumboSourcePosition value_start;
+    /** The starting position of the attribute value. */
+    GumboSourcePosition value_start;
 
-  /** The ending position of the attribute value. */
-  GumboSourcePosition value_end;
+    /** The ending position of the attribute value. */
+    GumboSourcePosition value_end;
 } GumboAttribute;
 
 /**
@@ -288,25 +450,26 @@ GumboAttribute* gumbo_get_attribute(const GumboVector* attrs, const char* name);
  * Enum denoting the type of node.  This determines the type of the node.v
  * union.
  */
-typedef enum {
-  /** Document node.  v will be a GumboDocument. */
-  GUMBO_NODE_DOCUMENT,
-  /** Element node.  v will be a GumboElement. */
-  GUMBO_NODE_ELEMENT,
-  /** Text node.  v will be a GumboText. */
-  GUMBO_NODE_TEXT,
-  /** CDATA node. v will be a GumboText. */
-  GUMBO_NODE_CDATA,
-  /** Comment node.  v will be a GumboText, excluding comment delimiters. */
-  GUMBO_NODE_COMMENT,
-  /** Text node, where all contents is whitespace.  v will be a GumboText. */
-  GUMBO_NODE_WHITESPACE,
-  /** Template node.  This is separate from GUMBO_NODE_ELEMENT because many
+typedef enum
+{
+    /** Document node.  v will be a GumboDocument. */
+    GUMBO_NODE_DOCUMENT,
+    /** Element node.  v will be a GumboElement. */
+    GUMBO_NODE_ELEMENT,
+    /** Text node.  v will be a GumboText. */
+    GUMBO_NODE_TEXT,
+    /** CDATA node. v will be a GumboText. */
+    GUMBO_NODE_CDATA,
+    /** Comment node.  v will be a GumboText, excluding comment delimiters. */
+    GUMBO_NODE_COMMENT,
+    /** Text node, where all contents is whitespace.  v will be a GumboText. */
+    GUMBO_NODE_WHITESPACE,
+    /** Template node.  This is separate from GUMBO_NODE_ELEMENT because many
    * client libraries will want to ignore the contents of template nodes, as
    * the spec suggests.  Recursing on GUMBO_NODE_ELEMENT will do the right thing
    * here, while clients that want to include template contents should also
    * check for GUMBO_NODE_TEMPLATE.  v will be a GumboElement.  */
-  GUMBO_NODE_TEMPLATE
+    GUMBO_NODE_TEMPLATE
 } GumboNodeType;
 
 /**
@@ -318,10 +481,11 @@ typedef struct GumboInternalNode GumboNode;
 /**
  * http://www.whatwg.org/specs/web-apps/current-work/complete/dom.html#quirks-mode
  */
-typedef enum {
-  GUMBO_DOCTYPE_NO_QUIRKS,
-  GUMBO_DOCTYPE_QUIRKS,
-  GUMBO_DOCTYPE_LIMITED_QUIRKS
+typedef enum
+{
+    GUMBO_DOCTYPE_NO_QUIRKS,
+    GUMBO_DOCTYPE_QUIRKS,
+    GUMBO_DOCTYPE_LIMITED_QUIRKS
 } GumboQuirksModeEnum;
 
 /**
@@ -331,10 +495,11 @@ typedef enum {
  * <math> tag is in the MathML namespace, and anything else is inside the HTML
  * namespace.  No other namespaces are supported, so this can be an enum only.
  */
-typedef enum {
-  GUMBO_NAMESPACE_HTML,
-  GUMBO_NAMESPACE_SVG,
-  GUMBO_NAMESPACE_MATHML
+typedef enum
+{
+    GUMBO_NAMESPACE_HTML,
+    GUMBO_NAMESPACE_SVG,
+    GUMBO_NAMESPACE_MATHML
 } GumboNamespaceEnum;
 
 /**
@@ -345,22 +510,23 @@ typedef enum {
  * may not be allowed by a style guide, or track the prevalence of incorrect or
  * tricky HTML code.
  */
-typedef enum {
-  /**
+typedef enum
+{
+    /**
    * A normal node - both start and end tags appear in the source, nothing has
    * been reparented.
    */
-  GUMBO_INSERTION_NORMAL = 0,
+    GUMBO_INSERTION_NORMAL = 0,
 
-  /**
+    /**
    * A node inserted by the parser to fulfill some implicit insertion rule.
    * This is usually set in addition to some other flag giving a more specific
    * insertion reason; it's a generic catch-all term meaning "The start tag for
    * this node did not appear in the document source".
    */
-  GUMBO_INSERTION_BY_PARSER = 1 << 0,
+    GUMBO_INSERTION_BY_PARSER = 1 << 0,
 
-  /**
+    /**
    * A flag indicating that the end tag for this node did not appear in the
    * document source.  Note that in some cases, you can still have
    * parser-inserted nodes with an explicit end tag: for example, "Text</html>"
@@ -371,172 +537,176 @@ typedef enum {
    * afterwards), which will leave this flag unset and require clients to
    * inspect the parse errors for that case.
    */
-  GUMBO_INSERTION_IMPLICIT_END_TAG = 1 << 1,
+    GUMBO_INSERTION_IMPLICIT_END_TAG = 1 << 1,
 
-  // Value 1 << 2 was for a flag that has since been removed.
+    // Value 1 << 2 was for a flag that has since been removed.
 
-  /**
+    /**
    * A flag for nodes that are inserted because their presence is implied by
    * other tags, eg. <html>, <head>, <body>, <tbody>, etc.
    */
-  GUMBO_INSERTION_IMPLIED = 1 << 3,
+    GUMBO_INSERTION_IMPLIED = 1 << 3,
 
-  /**
+    /**
    * A flag for nodes that are converted from their end tag equivalents.  For
    * example, </p> when no paragraph is open implies that the parser should
    * create a <p> tag and immediately close it, while </br> means the same thing
    * as <br>.
    */
-  GUMBO_INSERTION_CONVERTED_FROM_END_TAG = 1 << 4,
+    GUMBO_INSERTION_CONVERTED_FROM_END_TAG = 1 << 4,
 
-  /** A flag for nodes that are converted from the parse of an <isindex> tag. */
-  GUMBO_INSERTION_FROM_ISINDEX = 1 << 5,
+    /** A flag for nodes that are converted from the parse of an <isindex> tag. */
+    GUMBO_INSERTION_FROM_ISINDEX = 1 << 5,
 
-  /** A flag for <image> tags that are rewritten as <img>. */
-  GUMBO_INSERTION_FROM_IMAGE = 1 << 6,
+    /** A flag for <image> tags that are rewritten as <img>. */
+    GUMBO_INSERTION_FROM_IMAGE = 1 << 6,
 
-  /**
+    /**
    * A flag for nodes that are cloned as a result of the reconstruction of
    * active formatting elements.  This is set only on the clone; the initial
    * portion of the formatting run is a NORMAL node with an IMPLICIT_END_TAG.
    */
-  GUMBO_INSERTION_RECONSTRUCTED_FORMATTING_ELEMENT = 1 << 7,
+    GUMBO_INSERTION_RECONSTRUCTED_FORMATTING_ELEMENT = 1 << 7,
 
-  /** A flag for nodes that are cloned by the adoption agency algorithm. */
-  GUMBO_INSERTION_ADOPTION_AGENCY_CLONED = 1 << 8,
+    /** A flag for nodes that are cloned by the adoption agency algorithm. */
+    GUMBO_INSERTION_ADOPTION_AGENCY_CLONED = 1 << 8,
 
-  /** A flag for nodes that are moved by the adoption agency algorithm. */
-  GUMBO_INSERTION_ADOPTION_AGENCY_MOVED = 1 << 9,
+    /** A flag for nodes that are moved by the adoption agency algorithm. */
+    GUMBO_INSERTION_ADOPTION_AGENCY_MOVED = 1 << 9,
 
-  /**
+    /**
    * A flag for nodes that have been foster-parented out of a table (or
    * should've been foster-parented, if verbatim mode is set).
    */
-  GUMBO_INSERTION_FOSTER_PARENTED = 1 << 10,
+    GUMBO_INSERTION_FOSTER_PARENTED = 1 << 10,
 } GumboParseFlags;
 
 /**
  * Information specific to document nodes.
  */
-typedef struct {
-  /**
+typedef struct
+{
+    /**
    * An array of GumboNodes, containing the children of this element.  This will
    * normally consist of the <html> element and any comment nodes found.
    * Pointers are owned.
    */
-  GumboVector /* GumboNode* */ children;
+    GumboVector /* GumboNode* */ children;
 
-  // True if there was an explicit doctype token as opposed to it being omitted.
-  bool has_doctype;
+    // True if there was an explicit doctype token as opposed to it being omitted.
+    bool has_doctype;
 
-  // Fields from the doctype token, copied verbatim.
-  const char* name;
-  const char* public_identifier;
-  const char* system_identifier;
+    // Fields from the doctype token, copied verbatim.
+    const char* name;
+    const char* public_identifier;
+    const char* system_identifier;
 
-  /**
+    /**
    * Whether or not the document is in QuirksMode, as determined by the values
    * in the GumboTokenDocType template.
    */
-  GumboQuirksModeEnum doc_type_quirks_mode;
+    GumboQuirksModeEnum doc_type_quirks_mode;
 } GumboDocument;
 
 /**
  * The struct used to represent TEXT, CDATA, COMMENT, and WHITESPACE elements.
  * This contains just a block of text and its position.
  */
-typedef struct {
-  /**
+typedef struct
+{
+    /**
    * The text of this node, after entities have been parsed and decoded.  For
    * comment/cdata nodes, this does not include the comment delimiters.
    */
-  const char* text;
+    const char* text;
 
-  /**
+    /**
    * The original text of this node, as a pointer into the original buffer.  For
    * comment/cdata nodes, this includes the comment delimiters.
    */
-  GumboStringPiece original_text;
+    GumboStringPiece original_text;
 
-  /**
+    /**
    * The starting position of this node.  This corresponds to the position of
    * original_text, before entities are decoded.
    * */
-  GumboSourcePosition start_pos;
+    GumboSourcePosition start_pos;
 } GumboText;
 
 /**
  * The struct used to represent all HTML elements.  This contains information
  * about the tag, attributes, and child nodes.
  */
-typedef struct {
-  /**
+typedef struct
+{
+    /**
    * An array of GumboNodes, containing the children of this element.  Pointers
    * are owned.
    */
-  GumboVector /* GumboNode* */ children;
+    GumboVector /* GumboNode* */ children;
 
-  /** The GumboTag enum for this element. */
-  GumboTag tag;
+    /** The GumboTag enum for this element. */
+    GumboTag tag;
 
-  /** The GumboNamespaceEnum for this element. */
-  GumboNamespaceEnum tag_namespace;
+    /** The GumboNamespaceEnum for this element. */
+    GumboNamespaceEnum tag_namespace;
 
-  /**
+    /**
    * A GumboStringPiece pointing to the original tag text for this element,
    * pointing directly into the source buffer.  If the tag was inserted
    * algorithmically (for example, <head> or <tbody> insertion), this will be a
    * zero-length string.
    */
-  GumboStringPiece original_tag;
+    GumboStringPiece original_tag;
 
-  /**
+    /**
    * A GumboStringPiece pointing to the original end tag text for this element.
    * If the end tag was inserted algorithmically, (for example, closing a
    * self-closing tag), this will be a zero-length string.
    */
-  GumboStringPiece original_end_tag;
+    GumboStringPiece original_end_tag;
 
-  /** The source position for the start of the start tag. */
-  GumboSourcePosition start_pos;
+    /** The source position for the start of the start tag. */
+    GumboSourcePosition start_pos;
 
-  /** The source position for the start of the end tag. */
-  GumboSourcePosition end_pos;
+    /** The source position for the start of the end tag. */
+    GumboSourcePosition end_pos;
 
-  /**
+    /**
    * An array of GumboAttributes, containing the attributes for this tag in the
    * order that they were parsed.  Pointers are owned.
    */
-  GumboVector /* GumboAttribute* */ attributes;
+    GumboVector /* GumboAttribute* */ attributes;
 } GumboElement;
 
 /**
  * A supertype for GumboElement and GumboText, so that we can include one
  * generic type in lists of children and cast as necessary to subtypes.
  */
-struct GumboInternalNode {
-  /** The type of node that this is. */
-  GumboNodeType type;
+struct GumboInternalNode
+{
+    /** The type of node that this is. */
+    GumboNodeType type;
 
-  /** Pointer back to parent node.  Not owned. */
-  GumboNode* parent;
+    /** Pointer back to parent node.  Not owned. */
+    GumboNode* parent;
 
-  /** The index within the parent's children vector of this node. */
-  size_t index_within_parent;
+    /** The index within the parent's children vector of this node. */
+    size_t index_within_parent;
 
-  /**
+    /**
    * A bitvector of flags containing information about why this element was
    * inserted into the parse tree, including a variety of special parse
    * situations.
    */
-  GumboParseFlags parse_flags;
+    GumboParseFlags parse_flags;
 
-  /** The actual node data. */
-  union {
-    GumboDocument document;  // For GUMBO_NODE_DOCUMENT.
-    GumboElement element;    // For GUMBO_NODE_ELEMENT.
-    GumboText text;          // For everything else.
-  } v;
+    /** The actual node data. */
+    union {
+        GumboDocument document; // For GUMBO_NODE_DOCUMENT.
+        GumboElement element;   // For GUMBO_NODE_ELEMENT.
+        GumboText text;         // For everything else.
+    } v;
 };
 
 /**
@@ -560,41 +730,42 @@ typedef void (*GumboDeallocatorFunction)(void* userdata, void* ptr);
  * handling, etc.
  * Use kGumboDefaultOptions for sensible defaults, and only set what you need.
  */
-typedef struct GumboInternalOptions {
-  /** A memory allocator function.  Default: malloc. */
-  GumboAllocatorFunction allocator;
+typedef struct GumboInternalOptions
+{
+    /** A memory allocator function.  Default: malloc. */
+    GumboAllocatorFunction allocator;
 
-  /** A memory deallocator function. Default: free. */
-  GumboDeallocatorFunction deallocator;
+    /** A memory deallocator function. Default: free. */
+    GumboDeallocatorFunction deallocator;
 
-  /**
+    /**
    * An opaque object that's passed in as the first argument to all callbacks
    * used by this library.  Default: NULL.
    */
-  void* userdata;
+    void* userdata;
 
-  /**
+    /**
    * The tab-stop size, for computing positions in source code that uses tabs.
    * Default: 8.
    */
-  int tab_stop;
+    int tab_stop;
 
-  /**
+    /**
    * Whether or not to stop parsing when the first error is encountered.
    * Default: false.
    */
-  bool stop_on_first_error;
+    bool stop_on_first_error;
 
-  /**
+    /**
    * The maximum number of errors before the parser stops recording them.  This
    * is provided so that if the page is totally borked, we don't completely fill
    * up the errors vector and exhaust memory with useless redundant errors.  Set
    * to -1 to disable the limit.
    * Default: -1
    */
-  int max_errors;
+    int max_errors;
 
-  /**
+    /**
    * The fragment context for parsing:
    * https://html.spec.whatwg.org/multipage/syntax.html#parsing-html-fragments
    *
@@ -607,42 +778,43 @@ typedef struct GumboInternalOptions {
    *
    * Default: GUMBO_TAG_LAST
    */
-  GumboTag fragment_context;
+    GumboTag fragment_context;
 
-  /**
+    /**
    * The namespace for the fragment context.  This lets client code
    * differentiate between, say, parsing a <title> tag in SVG vs. parsing it in
    * HTML.
    * Default: GUMBO_NAMESPACE_HTML
    */
-  GumboNamespaceEnum fragment_namespace;
+    GumboNamespaceEnum fragment_namespace;
 } GumboOptions;
 
 /** Default options struct; use this with gumbo_parse_with_options. */
 extern const GumboOptions kGumboDefaultOptions;
 
 /** The output struct containing the results of the parse. */
-typedef struct GumboInternalOutput {
-  /**
+typedef struct GumboInternalOutput
+{
+    /**
    * Pointer to the document node.  This is a GumboNode of type NODE_DOCUMENT
    * that contains the entire document as its child.
    */
-  GumboNode* document;
+    GumboNode* document;
 
-  /**
+    /**
    * Pointer to the root node.  This the <html> tag that forms the root of the
    * document.
    */
-  GumboNode* root;
+    GumboNode* root;
 
-  /**
+    /**
    * A list of errors that occurred during the parse.
    * NOTE: In version 1.0 of this library, the API for errors hasn't been fully
    * fleshed out and may change in the future.  For this reason, the GumboError
    * header isn't part of the public API.  Contact us if you need errors
    * reported so we can work out something appropriate for your use-case.
    */
-  GumboVector /* GumboError */ errors;
+    GumboVector /* GumboError */ errors;
 } GumboOutput;
 
 /**
@@ -659,7 +831,9 @@ GumboOutput* gumbo_parse(const char* buffer);
  * buffer, and length.
  */
 GumboOutput* gumbo_parse_with_options(
-    const GumboOptions* options, const char* buffer, size_t buffer_length);
+    const GumboOptions* options,
+    const char* buffer,
+    size_t buffer_length);
 
 /** Release the memory used for the parse tree & parse errors. */
 void gumbo_destroy_output(const GumboOptions* options, GumboOutput* output);
@@ -668,4 +842,4 @@ void gumbo_destroy_output(const GumboOptions* options, GumboOutput* output);
 }
 #endif
 
-#endif  // GUMBO_GUMBO_H_
+#endif // GUMBO_GUMBO_H_

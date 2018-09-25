@@ -55,10 +55,6 @@ document get_document(const GumboNode& node)
 std::variant<text, element> get_node_type(const GumboNode& node)
 {
     switch (node.type) {
-        case GUMBO_NODE_DOCUMENT: {
-            assert(false);
-            throw std::runtime_error("attempting to create a document from a tree node");
-        }
         case GUMBO_NODE_ELEMENT:
         case GUMBO_NODE_TEMPLATE: {
             const auto& e = node.v.element;
@@ -83,14 +79,14 @@ std::variant<text, element> get_node_type(const GumboNode& node)
         }
         case GUMBO_NODE_TEXT:
         case GUMBO_NODE_CDATA:
-        case GUMBO_NODE_COMMENT:
-        case GUMBO_NODE_WHITESPACE: {
+        case GUMBO_NODE_COMMENT: {
             const auto& t = node.v.text;
             return text{
                 static_cast<node_type>(node.type),
                 t.text,
                 std::string_view{t.original_text.data, t.original_text.length}};
         }
+        default: break;
     }
     assert(false);
     throw std::runtime_error("unhandled node type");
@@ -104,6 +100,7 @@ parse_output::tree_type traverse(const GumboNode& root)
     if (!children) return tree;
     for (int i = 0; i < static_cast<int>(children->length); ++i) {
         const auto child = static_cast<const GumboNode*>(children->data[i]);
+        if (child->type == GumboNodeType::GUMBO_NODE_WHITESPACE) continue;
         auto it = tree.push_back({get_key(*child), traverse(*child)});
         it->second.data()._parent = tree.data();
     }

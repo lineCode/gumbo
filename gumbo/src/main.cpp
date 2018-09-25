@@ -26,8 +26,8 @@ int main(int argc, const char* argv[])
     beak::gumbo::parse_output p{contents};
     //beak::gumbo::parse_output p{"<html><head></head><body><h1><b>Hello, World!</b></h1></body></html>"};
     std::ostringstream ss;
-    //boost::property_tree::xml_writer_settings<std::string> s(' ', 4);
-    //boost::property_tree::xml_parser::write_xml(ss, p.tree(), s);
-    boost::property_tree::json_parser::write_json(ss, p._tree);
+    boost::property_tree::xml_writer_settings<std::string> s(' ', 4);
+    boost::property_tree::xml_parser::write_xml(ss, p._tree, s);
+    //boost::property_tree::json_parser::write_json(ss, p._tree);
     std::cout << ss.str() << "\n";
 }

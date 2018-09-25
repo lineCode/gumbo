@@ -1,5 +1,5 @@
 # Gumbo - A HTML5 parser.
-This provides C++ bindings for [Gumbo Parser](https://github.com/google/gumbo-parser).  
+This provides a C++ wrapper for [Gumbo Parser](https://github.com/google/gumbo-parser).  
 It also ports the build system to CMake and removes all extensions, tests, examples and samples.  
 
 ## License

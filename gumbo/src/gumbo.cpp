@@ -39,18 +39,25 @@ boost::optional<const GumboVector&> get_children(const GumboNode& node)
     throw std::runtime_error("unhandled node type");
 }
 
-std::variant<document, text, element> get_node_type(const GumboNode& node)
+document get_document(const GumboNode& node)
+{
+    assert(node.type == GUMBO_NODE_DOCUMENT);
+    const auto& d = node.v.document;
+    return document{
+        [&]() -> boost::optional<document::doc_type> {
+            if (!d.has_doctype) return boost::none;
+            return document::doc_type{
+                d.name, d.public_identifier, d.system_identifier};
+        }(),
+        static_cast<doctype_quirks_mode>(d.doc_type_quirks_mode)};
+}
+
+std::variant<text, element> get_node_type(const GumboNode& node)
 {
     switch (node.type) {
         case GUMBO_NODE_DOCUMENT: {
-            const auto& d = node.v.document;
-            return document{
-                [&]() -> boost::optional<document::doc_type> {
-                    if (!d.has_doctype) return boost::none;
-                    return document::doc_type{
-                        d.name, d.public_identifier, d.system_identifier};
-                }(),
-                static_cast<doctype_quirks_mode>(d.doc_type_quirks_mode)};
+            assert(false);
+            throw std::runtime_error("attempting to create a document from a tree node");
         }
         case GUMBO_NODE_ELEMENT:
         case GUMBO_NODE_TEMPLATE: {
@@ -101,7 +108,7 @@ parse_output::tree_type traverse(const GumboNode& root)
         it->second.data()._parent = tree.data();
     }
     return tree;
-} // namespace beak::gumbo
+}
 
 bool node::empty() const
 {
@@ -110,64 +117,28 @@ bool node::empty() const
 }
 
 parse_output::parse_output(std::string_view html, parse_options o)
-    : _tree{[&]() {
-        const GumboOptions gumbo_options{
-            kGumboDefaultOptions.allocator,
-            kGumboDefaultOptions.deallocator,
-            kGumboDefaultOptions.userdata,
-            kGumboDefaultOptions.tab_stop,
-            o._stop_on_first_error,
-            o._max_errors.value_or(-1),
-            static_cast<GumboTag>(o._fragment_context),
-            static_cast<GumboNamespaceEnum>(o._web_namespace)};
-        GumboOutput* output = gumbo_parse_with_options(
-            &gumbo_options,
-            html.data(),
-            html.size());
-
-        const auto tree = traverse(*output->root);
-
-        gumbo_destroy_output(
-            &gumbo_options,
-            output);
-
-        return tree;
-    }()}
 {
-}
+    const GumboOptions gumbo_options{
+        kGumboDefaultOptions.allocator,
+        kGumboDefaultOptions.deallocator,
+        kGumboDefaultOptions.userdata,
+        kGumboDefaultOptions.tab_stop,
+        o._stop_on_first_error,
+        o._max_errors.value_or(-1),
+        static_cast<GumboTag>(o._fragment_context),
+        static_cast<GumboNamespaceEnum>(o._web_namespace)};
 
-const parse_output::tree_type& parse_output::tree() const
-{
-    return _tree;
-}
+    GumboOutput* output = gumbo_parse_with_options(
+        &gumbo_options,
+        html.data(),
+        html.size());
 
-template <typename... Ts>
-struct overloaded : Ts...
-{
-    using Ts::operator()...;
-};
-template <typename... Ts>
-overloaded(Ts...)->overloaded<Ts...>;
+    _tree = traverse(*output->root);
+    _document = get_document(*output->document);
 
-std::ostream& operator<<(std::ostream& os, const parse_output::tree_type& tree)
-{
-    const auto& n = tree.data();
-    std::visit(
-        overloaded{
-            [&](const beak::gumbo::document&) {},
-            [&](const beak::gumbo::element& e) {
-                if (e._original_tag.empty()) {
-                    os << "<empty " << static_cast<int>(e._tag) << ">";
-                }
-                os << e._original_tag;
-                for (auto&& child : tree) {
-                    os << child.second;
-                }
-                os << e._original_end_tag;
-            },
-            [&](const beak::gumbo::text& t) { os << t._original_text; }},
-        n._value);
-    return os;
+    gumbo_destroy_output(
+        &gumbo_options,
+        output);
 }
 
 } // namespace beak::gumbo

@@ -10,19 +10,6 @@
 
 namespace beak::gumbo {
 
-struct document
-{
-    struct doc_type
-    {
-        std::string _name;
-        std::string _public_identifier;
-        std::string _system_identifier;
-    };
-
-    boost::optional<doc_type> _doc_type;
-    doctype_quirks_mode _doc_type_quicks_mode;
-};
-
 struct text
 {
     node_type _node_type;
@@ -53,8 +40,21 @@ struct node
 {
     boost::optional<node&> _parent;
     parse_flags::flags _parse_flags;
-    std::variant<document, text, element> _value;
+    std::variant<text, element> _value;
     bool empty() const;
+};
+
+struct document
+{
+    struct doc_type
+    {
+        std::string _name;
+        std::string _public_identifier;
+        std::string _system_identifier;
+    };
+
+    boost::optional<doc_type> _doc_type;
+    doctype_quirks_mode _doc_type_quicks_mode;
 };
 
 struct parse_options
@@ -69,10 +69,8 @@ struct parse_output
 {
     using tree_type = boost::property_tree::basic_ptree<std::string, node>;
     explicit parse_output(std::string_view html, parse_options = parse_options{});
-    const tree_type& tree() const;
-
-private:
-    const tree_type _tree;
+    document _document;
+    tree_type _tree;
 };
 
 } // namespace beak::gumbo

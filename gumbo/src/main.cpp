@@ -28,6 +28,6 @@ int main(int argc, const char* argv[])
     std::ostringstream ss;
     //boost::property_tree::xml_writer_settings<std::string> s(' ', 4);
     //boost::property_tree::xml_parser::write_xml(ss, p.tree(), s);
-    boost::property_tree::json_parser::write_json(ss, p.tree());
+    boost::property_tree::json_parser::write_json(ss, p._tree);
     std::cout << ss.str() << "\n";
 }

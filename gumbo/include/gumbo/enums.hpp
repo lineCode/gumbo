@@ -168,13 +168,26 @@ enum class attribute_namespace
 
 enum class node_type
 {
-    Document,
     Element,
     Text,
     CDATA,
     Comment,
     Whitespace,
     Template,
+};
+
+enum class element_type
+{
+    Element,
+    Template
+};
+
+enum class text_type
+{
+    Text,
+    CDATA,
+    Comment,
+    Whitespace
 };
 
 enum class doctype_quirks_mode

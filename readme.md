@@ -11,7 +11,6 @@ The original copyright notice [(COPYING)](https://github.com/Barath-Kannan/gumbo
 
 ## TODO
 - Add allocator support
-- Make text an optionally populated unique ptr in the node instead of a variant
 - Fix xml/json conversion issues related to text and element being separate tree nodes
 - Add stream operators for enums and structures
-- Separate node types into element and text type enums and remove the document type enum
+- Separate node types into element and text type enums 

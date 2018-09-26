@@ -11,6 +11,5 @@ The original copyright notice [(COPYING)](https://github.com/Barath-Kannan/gumbo
 
 ## TODO
 - Add allocator support
-- Fix xml/json conversion issues related to text and element being separate tree nodes
 - Add stream operators for enums and structures
-- Separate node types into element and text type enums 
+- fix keys for elements, create mapping of tags to tag strings

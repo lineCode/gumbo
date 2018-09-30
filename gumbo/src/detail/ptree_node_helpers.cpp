@@ -1,18 +1,7 @@
 #include "gumbo/detail/ptree_node_helpers.hpp"
 #include <variant>
+#include "gumbo/detail/overloaded.hpp"
 #include "gumbo/gumbo.hpp"
-
-namespace {
-
-template <typename... Ts>
-struct overloaded : Ts...
-{
-    using Ts::operator()...;
-};
-template <typename... Ts>
-overloaded(Ts...)->overloaded<Ts...>;
-
-} // namespace
 
 namespace beak::gumbo::detail {
 

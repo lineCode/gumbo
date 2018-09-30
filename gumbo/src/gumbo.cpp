@@ -1,25 +1,23 @@
 #include "gumbo/gumbo.hpp"
 #include <set>
 #include <stack>
+#include "gumbo/detail/overloaded.hpp"
 #include "original/gumbo.h"
 
 namespace beak::gumbo {
 
-std::string get_key(const node& node)
+auto get_key(const node& node) -> std::string
 {
-    if (std::holds_alternative<text>(node._value)) {
-        const text& t = std::get<text>(node._value);
-        return "<xmltext>";
-    }
-
-    if (!std::holds_alternative<element>(node._value))
-        return "";
-
-    const element& e = std::get<element>(node._value);
-    return std::string{e._original_tag.data() + 1, e._original_tag.size() - 2};
+    return std::visit(
+        detail::overloaded{
+            [](const text&) -> std::string { return "<xmltext>"; },
+            [](const element& e) -> std::string { const auto sv = to_string_view(e._tag); return std::string{sv.data(), sv.size()}; },
+            [](const document&) -> std::string { return ""; },
+            [](const attribute&) -> std::string { return ""; }},
+        node._value);
 }
 
-boost::optional<const GumboVector&> get_children(const GumboNode& node)
+auto get_children(const GumboNode& node) -> boost::optional<const GumboVector&>
 {
     switch (node.type) {
         case GUMBO_NODE_DOCUMENT: return node.v.document.children;
@@ -34,7 +32,7 @@ boost::optional<const GumboVector&> get_children(const GumboNode& node)
     throw std::runtime_error("unhandled node type");
 }
 
-document get_document(const GumboDocument& d)
+auto get_document(const GumboDocument& d) -> document
 {
     return document{
         [&]() -> boost::optional<document::doc_type> {
@@ -45,7 +43,7 @@ document get_document(const GumboDocument& d)
         static_cast<doctype_quirks_mode>(d.doc_type_quirks_mode)};
 }
 
-std::pair<std::string, parse_output::tree> get_attributes(const GumboElement& e)
+auto get_attributes(const GumboElement& e) -> std::pair<std::string, parse_output::tree>
 {
     parse_output::tree tree;
     for (int i = 0; i < static_cast<int>(e.attributes.length); ++i) {
@@ -65,7 +63,7 @@ std::pair<std::string, parse_output::tree> get_attributes(const GumboElement& e)
     return {"<xmlattr>", tree};
 }
 
-element get_element(const GumboElement& e, element_type t)
+auto get_element(const GumboElement& e, element_type t) -> element
 {
     return element{
         t,
@@ -76,7 +74,7 @@ element get_element(const GumboElement& e, element_type t)
     };
 }
 
-text get_text(const GumboText& e, text_type t)
+auto get_text(const GumboText& e, text_type t) -> text
 {
     return text{
         t,
@@ -84,7 +82,7 @@ text get_text(const GumboText& e, text_type t)
         std::string_view{e.original_text.data, e.original_text.length}};
 }
 
-std::variant<document, text, element, attribute> get_node_type(const GumboNode& node)
+auto get_node_type(const GumboNode& node) -> std::variant<document, text, element, attribute>
 {
     switch (node.type) {
         case GUMBO_NODE_DOCUMENT: return get_document(node.v.document);
@@ -99,7 +97,7 @@ std::variant<document, text, element, attribute> get_node_type(const GumboNode& 
     throw std::runtime_error("unhandled node type");
 }
 
-std::pair<std::string, parse_output::tree> traverse(const GumboNode& root, const parse_options& opts)
+auto traverse(const GumboNode& root, const parse_options& opts) -> std::pair<std::string, parse_output::tree>
 {
     using tree_type = parse_output::tree;
     tree_type tree{node{boost::none, static_cast<parse_flags::flags>(root.parse_flags), get_node_type(root)}};
@@ -117,7 +115,7 @@ std::pair<std::string, parse_output::tree> traverse(const GumboNode& root, const
     return {get_key(tree.data()), tree};
 }
 
-bool node::empty() const
+auto node::empty() const -> bool
 {
     if (!std::holds_alternative<text>(_value)) return true;
     return std::get<text>(_value)._text.empty();

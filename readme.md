@@ -11,5 +11,3 @@ The original copyright notice [(COPYING)](https://github.com/Barath-Kannan/gumbo
 
 ## TODO
 - Add allocator support
-- Add stream operators for enums and structures
-- fix keys for elements, create mapping of tags to tag strings

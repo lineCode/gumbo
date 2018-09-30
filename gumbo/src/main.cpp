@@ -6,9 +6,9 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include "gumbo/gumbo.hpp"
 
-int main(int argc, const char* argv[])
+auto main(int argc, const char* argv[]) -> int
 {
-    /*assert(argc > 1);
+    assert(argc > 1);
 
     std::string contents;
     {
@@ -23,11 +23,11 @@ int main(int argc, const char* argv[])
         f.read(&contents[0], contents.size());
         f.close();
     }
-    beak::gumbo::parse_output p{contents};*/
-    beak::gumbo::parse_output p{"<html><head></head><body><h1 align=left><b>Hello, World!</b></h1></body></html>"};
+    beak::gumbo::parse_output p{contents};
+    //beak::gumbo::parse_output p{"<html><head></head><body><h1 align=left><b>Hello, World!</b></h1></body></html>"};
     std::ostringstream ss;
     boost::property_tree::xml_writer_settings<std::string> s(' ', 4);
     boost::property_tree::xml_parser::write_xml(ss, p._document, s);
-    //boost::property_tree::json_parser::write_json(ss, p._tree);
+    //boost::property_tree::json_parser::write_json(ss, p._document);
     std::cout << ss.str() << "\n";
 }

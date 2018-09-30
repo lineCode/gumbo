@@ -13,11 +13,8 @@ struct enum_conversion
 
     static constexpr std::string_view to_string_view(Enum e)
     {
-        const auto it = std::find_if(
-            T::map.begin(),
-            T::map.end(),
-            [&](const auto& v) { return std::get<Enum>(v) == e; });
-        return it->second;
+        using index_type = typename decltype(T::map)::size_type;
+        return std::get<std::string_view>(T::map[static_cast<index_type>(e)]);
     }
 
     static constexpr boost::optional<Enum> to_enum(
@@ -35,7 +32,7 @@ struct enum_conversion
                     return boost::iequals(sv, view);
             });
         if (it == T::map.end()) return boost::none;
-        return it->first;
+        return std::get<Enum>(*it);
     }
 
 protected:

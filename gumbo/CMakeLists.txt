@@ -47,31 +47,25 @@ set(LIB_FILES
 ################################################
 # Targets
 ################################################
-add_library(libbeak-cgumbo
+add_library(beak-cgumbo
     ${ORIGINAL_LIB_FILES}
 )
-target_include_directories(libbeak-cgumbo
+target_include_directories(beak-cgumbo
     PRIVATE src/original
 )
 
-add_library(libbeak-gumbo
+add_library(beak-gumbo
     ${LIB_FILES}
 )
-target_include_directories(libbeak-gumbo
+target_include_directories(beak-gumbo
     PUBLIC include
     PRIVATE src
 )
-target_link_libraries(libbeak-gumbo
-    libbeak-cgumbo
+target_link_libraries(beak-gumbo
+    beak-cgumbo
     Boost::system
 )
-set_property(TARGET libbeak-gumbo
+set_property(TARGET beak-gumbo
     PROPERTY CXX_STANDARD 17)
 
-add_executable(gumbo_test
-    ${S}/main.cpp
-)
-
-target_link_libraries(gumbo_test
-    libbeak-gumbo
-)
+add_library(beak::gumbo ALIAS beak-gumbo)

@@ -9,8 +9,7 @@ struct node;
 
 namespace detail {
 
-struct node_tree_translator
-{
+struct node_tree_translator {
     using internal_type = beak::gumbo::node;
     using external_type = std::string;
     auto get_value(const internal_type&) const -> boost::optional<external_type>;
@@ -23,8 +22,7 @@ struct node_tree_translator
 namespace boost::property_tree {
 
 template <>
-struct translator_between<beak::gumbo::node, std::string>
-{
+struct translator_between<beak::gumbo::node, std::string> {
     using type = beak::gumbo::detail::node_tree_translator;
 };
 

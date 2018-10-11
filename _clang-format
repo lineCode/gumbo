@@ -10,13 +10,13 @@ AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: true
-AllowShortFunctionsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: false
 AllowShortIfStatementsOnASingleLine: true
 AllowShortLoopsOnASingleLine: true
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: true
-AlwaysBreakTemplateDeclarations: true
+AlwaysBreakTemplateDeclarations: false
 BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBinaryOperators: None
@@ -25,8 +25,8 @@ BraceWrapping:
   BeforeElse:      true
   BeforeCatch:     false
   AfterEnum:       true
-  AfterStruct:     true
-  AfterClass:      true
+  AfterStruct:     false
+  AfterClass:      false
   AfterFunction:   true
   AfterControlStatement: false
   AfterNamespace:  false
@@ -34,7 +34,7 @@ BraceWrapping:
   AfterUnion:      false
   IndentBraces:    false
   SplitEmptyFunction: false
-  SplitEmptyRecord: true
+  SplitEmptyRecord: false
   SplitEmptyNamespace: true
 BreakBeforeInheritanceComma: true
 BreakBeforeTernaryOperators: true
@@ -46,7 +46,7 @@ CommentPragmas:  '^ IWYU pragma:'
 CompactNamespaces: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 ConstructorInitializerIndentWidth: 4
-ContinuationIndentWidth: 4
+ContinuationIndentWidth: 1
 Cpp11BracedListStyle: true
 DerivePointerAlignment: false
 DisableFormat:   false

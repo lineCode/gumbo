@@ -3,8 +3,7 @@
 namespace beak::gumbo::detail {
 
 template <typename... Ts>
-struct overloaded : Ts...
-{
+struct overloaded : Ts... {
     using Ts::operator()...;
 };
 template <typename... Ts>

@@ -9,12 +9,12 @@ namespace beak::gumbo {
 auto get_key(const node& node) -> std::string
 {
     return std::visit(
-        detail::overloaded{
-            [](const text&) -> std::string { return "<xmltext>"; },
-            [](const element& e) -> std::string { const auto sv = to_string_view(e._tag); return std::string{sv.data(), sv.size()}; },
-            [](const document&) -> std::string { return ""; },
-            [](const attribute&) -> std::string { return ""; }},
-        node._value);
+     detail::overloaded{
+      [](const text&) -> std::string { return "<xmltext>"; },
+      [](const element& e) -> std::string { const auto sv = to_string_view(e._tag); return std::string{sv.data(), sv.size()}; },
+      [](const document&) -> std::string { return ""; },
+      [](const attribute&) -> std::string { return ""; }},
+     node._value);
 }
 
 auto get_children(const GumboNode& node) -> boost::optional<const GumboVector&>
@@ -35,12 +35,12 @@ auto get_children(const GumboNode& node) -> boost::optional<const GumboVector&>
 auto get_document(const GumboDocument& d) -> document
 {
     return document{
-        [&]() -> boost::optional<document::doc_type> {
-            if (!d.has_doctype) return boost::none;
-            return document::doc_type{
-                d.name, d.public_identifier, d.system_identifier};
-        }(),
-        static_cast<doctype_quirks_mode>(d.doc_type_quirks_mode)};
+     [&]() -> boost::optional<document::doc_type> {
+         if (!d.has_doctype) return boost::none;
+         return document::doc_type{
+          d.name, d.public_identifier, d.system_identifier};
+     }(),
+     static_cast<doctype_quirks_mode>(d.doc_type_quirks_mode)};
 }
 
 auto get_attributes(const GumboElement& e) -> std::pair<std::string, parse_output::tree>
@@ -50,14 +50,14 @@ auto get_attributes(const GumboElement& e) -> std::pair<std::string, parse_outpu
         const auto a = static_cast<GumboAttribute*>(e.attributes.data[i]);
         const auto name = std::string{a->name};
         node n{
-            boost::none,
-            parse_flags::flags{0},
-            attribute{
-                static_cast<attribute_namespace>(a->attr_namespace),
-                name,
-                std::string_view{a->original_name.data, a->original_name.length},
-                std::string{a->value},
-                std::string_view{a->original_value.data, a->original_value.length}}};
+         boost::none,
+         parse_flags::flags{0},
+         attribute{
+          static_cast<attribute_namespace>(a->attr_namespace),
+          name,
+          std::string_view{a->original_name.data, a->original_name.length},
+          std::string{a->value},
+          std::string_view{a->original_value.data, a->original_value.length}}};
         tree.push_back(std::pair{name, parse_output::tree{std::move(n)}});
     }
     return {"<xmlattr>", tree};
@@ -66,20 +66,20 @@ auto get_attributes(const GumboElement& e) -> std::pair<std::string, parse_outpu
 auto get_element(const GumboElement& e, element_type t) -> element
 {
     return element{
-        t,
-        static_cast<tag>(e.tag),
-        static_cast<web_namespace>(e.tag_namespace),
-        std::string_view{e.original_tag.data, e.original_tag.length},
-        std::string_view{e.original_end_tag.data, e.original_end_tag.length},
+     t,
+     static_cast<tag>(e.tag),
+     static_cast<web_namespace>(e.tag_namespace),
+     std::string_view{e.original_tag.data, e.original_tag.length},
+     std::string_view{e.original_end_tag.data, e.original_end_tag.length},
     };
 }
 
 auto get_text(const GumboText& e, text_type t) -> text
 {
     return text{
-        t,
-        e.text,
-        std::string_view{e.original_text.data, e.original_text.length}};
+     t,
+     e.text,
+     std::string_view{e.original_text.data, e.original_text.length}};
 }
 
 auto get_node_type(const GumboNode& node) -> std::variant<document, text, element, attribute>
@@ -124,25 +124,25 @@ auto node::empty() const -> bool
 parse_output::parse_output(std::string_view html, parse_options o)
 {
     const GumboOptions gumbo_options{
-        kGumboDefaultOptions.allocator,
-        kGumboDefaultOptions.deallocator,
-        kGumboDefaultOptions.userdata,
-        kGumboDefaultOptions.tab_stop,
-        o._stop_on_first_error,
-        o._max_errors.value_or(-1),
-        static_cast<GumboTag>(o._fragment_context),
-        static_cast<GumboNamespaceEnum>(o._web_namespace)};
+     kGumboDefaultOptions.allocator,
+     kGumboDefaultOptions.deallocator,
+     kGumboDefaultOptions.userdata,
+     kGumboDefaultOptions.tab_stop,
+     o._stop_on_first_error,
+     o._max_errors.value_or(-1),
+     static_cast<GumboTag>(o._fragment_context),
+     static_cast<GumboNamespaceEnum>(o._web_namespace)};
 
     GumboOutput* output = gumbo_parse_with_options(
-        &gumbo_options,
-        html.data(),
-        html.size());
+     &gumbo_options,
+     html.data(),
+     html.size());
 
     _document = traverse(*output->document, o).second;
 
     gumbo_destroy_output(
-        &gumbo_options,
-        output);
+     &gumbo_options,
+     output);
 }
 
 } // namespace beak::gumbo

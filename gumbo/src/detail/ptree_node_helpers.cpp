@@ -9,12 +9,12 @@ auto node_tree_translator::get_value(const beak::gumbo::node& n) const -> boost:
 {
     std::stringstream ss;
     std::visit(
-        overloaded{
-            [&](const text& t) { ss << t._original_text; },
-            [](const element&) {},
-            [](const document&) {},
-            [&](const attribute& a) { ss << a._value; }},
-        n._value);
+     overloaded{
+      [&](const text& t) { ss << t._original_text; },
+      [](const element&) {},
+      [](const document&) {},
+      [&](const attribute& a) { ss << a._value; }},
+     n._value);
     return ss.str();
 }
 

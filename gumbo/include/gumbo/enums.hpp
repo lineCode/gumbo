@@ -5,11 +5,8 @@
 
 namespace beak::gumbo {
 
-enum class case_sensitive
-{
-    False,
-    True
-};
+struct icase_t {
+} constexpr icase;
 
 enum class tag;
 enum class attribute_namespace;
@@ -35,13 +32,20 @@ auto operator<<(std::ostream&, text_type) -> std::ostream&;
 auto operator<<(std::ostream&, doctype_quirks_mode) -> std::ostream&;
 auto operator<<(std::ostream&, web_namespace) -> std::ostream&;
 
-auto to_tag(std::string_view, case_sensitive = case_sensitive::True) -> boost::optional<tag>;
-auto to_attribute_namespace(std::string_view, case_sensitive = case_sensitive::True) -> boost::optional<attribute_namespace>;
-auto to_node_type(std::string_view, case_sensitive = case_sensitive::True) -> boost::optional<node_type>;
-auto to_element_type(std::string_view, case_sensitive = case_sensitive::True) -> boost::optional<element_type>;
-auto to_text_type(std::string_view, case_sensitive = case_sensitive::True) -> boost::optional<text_type>;
-auto to_doctype_quirks_mode(std::string_view, case_sensitive = case_sensitive::True) -> boost::optional<doctype_quirks_mode>;
-auto to_web_namespace(std::string_view, case_sensitive = case_sensitive::True) -> boost::optional<web_namespace>;
+auto to_tag(std::string_view) -> boost::optional<tag>;
+auto to_tag(std::string_view, icase_t) -> boost::optional<tag>;
+auto to_attribute_namespace(std::string_view) -> boost::optional<attribute_namespace>;
+auto to_attribute_namespace(std::string_view, icase_t) -> boost::optional<attribute_namespace>;
+auto to_node_type(std::string_view) -> boost::optional<node_type>;
+auto to_node_type(std::string_view, icase_t) -> boost::optional<node_type>;
+auto to_element_type(std::string_view) -> boost::optional<element_type>;
+auto to_element_type(std::string_view, icase_t) -> boost::optional<element_type>;
+auto to_text_type(std::string_view) -> boost::optional<text_type>;
+auto to_text_type(std::string_view, icase_t) -> boost::optional<text_type>;
+auto to_doctype_quirks_mode(std::string_view) -> boost::optional<doctype_quirks_mode>;
+auto to_doctype_quirks_mode(std::string_view, icase_t) -> boost::optional<doctype_quirks_mode>;
+auto to_web_namespace(std::string_view) -> boost::optional<web_namespace>;
+auto to_web_namespace(std::string_view, icase_t) -> boost::optional<web_namespace>;
 
 enum class tag
 {

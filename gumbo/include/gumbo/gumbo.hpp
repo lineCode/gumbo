@@ -41,6 +41,7 @@ struct element {
     web_namespace _tag_namespace;
     std::string_view _original_tag;
     std::string_view _original_end_tag;
+    auto contained_text() const -> std::string_view;
 };
 
 struct node {

@@ -1,6 +1,6 @@
 #include "gumbo/detail/ptree_node_helpers.hpp"
 #include <variant>
-#include "gumbo/detail/overloaded.hpp"
+#include "beak/util/overloaded.hpp"
 #include "gumbo/gumbo.hpp"
 
 namespace beak::gumbo::detail {
@@ -9,7 +9,7 @@ auto node_tree_translator::get_value(const beak::gumbo::node& n) const -> boost:
 {
     std::stringstream ss;
     std::visit(
-     overloaded{
+     util::overloaded{
       [&](const text& t) { ss << t._original_text; },
       [](const element&) {},
       [](const document&) {},

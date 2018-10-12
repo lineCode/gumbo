@@ -40,7 +40,6 @@ set(S src)
 set(LIB_FILES
     ${H}/enums.hpp ${S}/enums.cpp
     ${H}/gumbo.hpp ${S}/gumbo.cpp
-    ${H}/detail/overloaded.hpp
     ${H}/detail/ptree_node_helpers.hpp ${S}/detail/ptree_node_helpers.cpp
 )
 
@@ -62,6 +61,7 @@ target_include_directories(beak-gumbo
     PRIVATE src
 )
 target_link_libraries(beak-gumbo
+    beak::util
     beak-cgumbo
     Boost::system
 )

@@ -1,53 +1,10 @@
 #include "gumbo/enums.hpp"
-#include <array>
-#include <experimental/array>
 #include <ostream>
-#include <boost/algorithm/string/predicate.hpp>
-
-namespace {
-
-template <typename T, typename Enum>
-struct enum_conversion {
-    using case_sensitive = beak::gumbo::case_sensitive;
-
-    static constexpr std::string_view to_string_view(Enum e)
-    {
-        using index_type = typename decltype(T::map)::size_type;
-        return std::get<std::string_view>(T::map[static_cast<index_type>(e)]);
-    }
-
-    static constexpr boost::optional<Enum> to_enum(
-     std::string_view view,
-     case_sensitive sensitive)
-    {
-        const auto it = std::find_if(
-         T::map.begin(),
-         T::map.end(),
-         [&](const auto& v) {
-             const auto& sv = std::get<std::string_view>(v);
-             if (sensitive == case_sensitive::True)
-                 return sv == view;
-             else
-                 return boost::iequals(sv, view);
-         });
-        if (it == T::map.end()) return boost::none;
-        return std::get<Enum>(*it);
-    }
-
-protected:
-    using p = std::pair<Enum, std::string_view>;
-    template <typename... Args>
-    static constexpr auto make_lookup(Args&&... args)
-    {
-        return std::experimental::make_array<p>(std::forward<Args>(args)...);
-    }
-};
-
-} // namespace
+#include "beak/util/enum_string_conversion.hpp"
 
 namespace beak::gumbo {
 
-struct tag_conversion : enum_conversion<tag_conversion, tag> {
+struct tag_conversion : util::enum_string_conversion<tag_conversion, tag> {
     static constexpr auto map = make_lookup(
      p{tag::Html, "html"},
      p{tag::Head, "head"},
@@ -203,7 +160,7 @@ struct tag_conversion : enum_conversion<tag_conversion, tag> {
      p{tag::Last, "last"});
 };
 
-struct attribute_namespace_conversion : enum_conversion<attribute_namespace_conversion, attribute_namespace> {
+struct attribute_namespace_conversion : util::enum_string_conversion<attribute_namespace_conversion, attribute_namespace> {
     static constexpr auto map = make_lookup(
      p{attribute_namespace::None, "none"},
      p{attribute_namespace::XLink, "XLink"},
@@ -211,7 +168,7 @@ struct attribute_namespace_conversion : enum_conversion<attribute_namespace_conv
      p{attribute_namespace::XMLNS, "XMLNS"});
 };
 
-struct node_type_conversion : enum_conversion<node_type_conversion, node_type> {
+struct node_type_conversion : util::enum_string_conversion<node_type_conversion, node_type> {
     static constexpr auto map = make_lookup(
      p{node_type::Element, "element"},
      p{node_type::Text, "text"},
@@ -221,13 +178,13 @@ struct node_type_conversion : enum_conversion<node_type_conversion, node_type> {
      p{node_type::Template, "template"});
 };
 
-struct element_type_conversion : enum_conversion<element_type_conversion, element_type> {
+struct element_type_conversion : util::enum_string_conversion<element_type_conversion, element_type> {
     static constexpr auto map = make_lookup(
      p{element_type::Element, "element"},
      p{element_type::Template, "template"});
 };
 
-struct text_type_conversion : enum_conversion<text_type_conversion, text_type> {
+struct text_type_conversion : util::enum_string_conversion<text_type_conversion, text_type> {
     static constexpr auto map = make_lookup(
      p{text_type::Text, "text"},
      p{text_type::CDATA, "CDATA"},
@@ -235,14 +192,14 @@ struct text_type_conversion : enum_conversion<text_type_conversion, text_type> {
      p{text_type::Whitespace, "whitespace"});
 };
 
-struct doctype_quirks_mode_conversion : enum_conversion<doctype_quirks_mode_conversion, doctype_quirks_mode> {
+struct doctype_quirks_mode_conversion : util::enum_string_conversion<doctype_quirks_mode_conversion, doctype_quirks_mode> {
     static constexpr auto map = make_lookup(
      p{doctype_quirks_mode::NoQuirks, "no_quirks"},
      p{doctype_quirks_mode::Quirks, "quirks"},
      p{doctype_quirks_mode::LimitedQuicks, "limited_quirks"});
 };
 
-struct web_namespace_conversion : enum_conversion<web_namespace_conversion, web_namespace> {
+struct web_namespace_conversion : util::enum_string_conversion<web_namespace_conversion, web_namespace> {
     static constexpr auto map = make_lookup(
      p{web_namespace::HTML, "HTML"},
      p{web_namespace::SVG, "SVG"},
@@ -326,14 +283,24 @@ auto operator<<(std::ostream& os, web_namespace ns) -> std::ostream&
     return os;
 }
 
-auto to_tag(std::string_view view, case_sensitive sensitive) -> boost::optional<tag>
+auto to_tag(std::string_view view) -> boost::optional<tag>
 {
-    return tag_conversion::to_enum(view, sensitive);
+    return tag_conversion::to_enum(view);
 }
 
-auto to_attribute_namespace(std::string_view view, case_sensitive sensitive) -> boost::optional<attribute_namespace>
+auto to_tag(std::string_view view, icase_t) -> boost::optional<tag>
 {
-    return attribute_namespace_conversion::to_enum(view, sensitive);
+    return tag_conversion::to_enum(view, util::icase);
+}
+
+auto to_attribute_namespace(std::string_view view) -> boost::optional<attribute_namespace>
+{
+    return attribute_namespace_conversion::to_enum(view);
+}
+
+auto to_attribute_namespace(std::string_view view, icase_t) -> boost::optional<attribute_namespace>
+{
+    return attribute_namespace_conversion::to_enum(view, util::icase);
 }
 
 auto to_node_type(std::string_view view, case_sensitive sensitive) -> boost::optional<node_type>

@@ -1,7 +1,7 @@
 #include "gumbo/gumbo.hpp"
 #include <set>
 #include <stack>
-#include "gumbo/detail/overloaded.hpp"
+#include "beak/util/overloaded.hpp"
 #include "original/gumbo.h"
 
 namespace beak::gumbo {
@@ -9,7 +9,7 @@ namespace beak::gumbo {
 auto get_key(const node& node) -> std::string
 {
     return std::visit(
-     detail::overloaded{
+     util::overloaded{
       [](const text&) -> std::string { return "<xmltext>"; },
       [](const element& e) -> std::string { const auto sv = to_string_view(e._tag); return std::string{sv.data(), sv.size()}; },
       [](const document&) -> std::string { return ""; },
@@ -113,6 +113,14 @@ auto traverse(const GumboNode& root, const parse_options& opts) -> std::pair<std
     }
 
     return {get_key(tree.data()), tree};
+}
+
+auto element::contained_text() const -> std::string_view
+{
+    const auto begin = _original_tag.end();
+    const auto length = static_cast<std::string_view::size_type>(
+     std::distance(begin, _original_end_tag.begin()));
+    return std::string_view{begin, length};
 }
 
 auto node::empty() const -> bool

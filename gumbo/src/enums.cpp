@@ -1,4 +1,4 @@
-#include "gumbo/enums.hpp"
+#include "beak/gumbo/enums.hpp"
 #include <ostream>
 #include "beak/util/enum_string_conversion.hpp"
 
@@ -303,29 +303,54 @@ auto to_attribute_namespace(std::string_view view, icase_t) -> boost::optional<a
     return attribute_namespace_conversion::to_enum(view, util::icase);
 }
 
-auto to_node_type(std::string_view view, case_sensitive sensitive) -> boost::optional<node_type>
+auto to_node_type(std::string_view view) -> boost::optional<node_type>
 {
-    return node_type_conversion::to_enum(view, sensitive);
+    return node_type_conversion::to_enum(view);
 }
 
-auto to_element_type(std::string_view view, case_sensitive sensitive) -> boost::optional<element_type>
+auto to_node_type(std::string_view view, icase_t) -> boost::optional<node_type>
 {
-    return element_type_conversion::to_enum(view, sensitive);
+    return node_type_conversion::to_enum(view, util::icase);
 }
 
-auto to_text_type(std::string_view view, case_sensitive sensitive) -> boost::optional<text_type>
+auto to_element_type(std::string_view view) -> boost::optional<element_type>
 {
-    return text_type_conversion::to_enum(view, sensitive);
+    return element_type_conversion::to_enum(view);
 }
 
-auto to_doctype_quirks_mode(std::string_view view, case_sensitive sensitive) -> boost::optional<doctype_quirks_mode>
+auto to_element_type(std::string_view view, icase_t) -> boost::optional<element_type>
 {
-    return doctype_quirks_mode_conversion::to_enum(view, sensitive);
+    return element_type_conversion::to_enum(view, util::icase);
 }
 
-auto to_web_namespace(std::string_view view, case_sensitive sensitive) -> boost::optional<web_namespace>
+auto to_text_type(std::string_view view) -> boost::optional<text_type>
 {
-    return web_namespace_conversion::to_enum(view, sensitive);
+    return text_type_conversion::to_enum(view);
+}
+
+auto to_text_type(std::string_view view, icase_t) -> boost::optional<text_type>
+{
+    return text_type_conversion::to_enum(view, util::icase);
+}
+
+auto to_doctype_quirks_mode(std::string_view view) -> boost::optional<doctype_quirks_mode>
+{
+    return doctype_quirks_mode_conversion::to_enum(view);
+}
+
+auto to_doctype_quirks_mode(std::string_view view, icase_t) -> boost::optional<doctype_quirks_mode>
+{
+    return doctype_quirks_mode_conversion::to_enum(view, util::icase);
+}
+
+auto to_web_namespace(std::string_view view) -> boost::optional<web_namespace>
+{
+    return web_namespace_conversion::to_enum(view);
+}
+
+auto to_web_namespace(std::string_view view, icase_t) -> boost::optional<web_namespace>
+{
+    return web_namespace_conversion::to_enum(view, util::icase);
 }
 
 } // namespace beak::gumbo

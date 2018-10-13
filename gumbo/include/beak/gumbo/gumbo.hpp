@@ -5,8 +5,8 @@
 #include <vector>
 #include <boost/optional.hpp>
 #include <boost/property_tree/ptree.hpp>
-#include "gumbo/detail/ptree_node_helpers.hpp"
-#include "gumbo/enums.hpp"
+#include "beak/gumbo/detail/ptree_node_helpers.hpp"
+#include "beak/gumbo/enums.hpp"
 
 namespace beak::gumbo {
 

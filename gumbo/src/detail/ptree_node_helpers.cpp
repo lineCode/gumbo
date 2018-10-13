@@ -1,7 +1,7 @@
-#include "gumbo/detail/ptree_node_helpers.hpp"
+#include "beak/gumbo/detail/ptree_node_helpers.hpp"
 #include <variant>
 #include "beak/util/overloaded.hpp"
-#include "gumbo/gumbo.hpp"
+#include "beak/gumbo/gumbo.hpp"
 
 namespace beak::gumbo::detail {
 

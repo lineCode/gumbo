@@ -35,7 +35,7 @@ set(ORIGINAL_LIB_FILES
     ${S}/vector.h ${S}/vector.c
 )
 
-set(H include/gumbo)
+set(H include/beak/gumbo)
 set(S src)
 set(LIB_FILES
     ${H}/enums.hpp ${S}/enums.cpp

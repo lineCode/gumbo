@@ -2,7 +2,6 @@
 # Project Settings
 ################################################
 project(beak-gumbo C CXX)
-cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 17)
 
 ################################################

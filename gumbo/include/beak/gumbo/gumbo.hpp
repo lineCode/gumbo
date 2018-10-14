@@ -65,4 +65,6 @@ struct parse_output {
     tree _document;
 };
 
+auto get_text(const parse_output::tree&) -> std::string;
+
 } // namespace beak::gumbo

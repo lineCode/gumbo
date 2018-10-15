@@ -1,13 +1,7 @@
 include(FetchContent)
 
-if (EXISTS ${CMAKE_SOURCE_DIR}/external) 
-    set(EXTERNAL_DIR ${CMAKE_SOURCE_DIR}/external)
-elseif (EXISTS ${CMAKE_SOURCE_DIR}/extern)
-    set(EXTERNAL_DIR ${CMAKE_SOURCE_DIR}/extern)
-elseif (EXISTS ${CMAKE_SOURCE_DIR}/3rdParty)
-    set(EXTERNAL_DIR ${CMAKE_SOURCE_DIR}/3rdParty)
-else()
-    set(EXTERNAL_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+if (NOT beak_clone_dir)
+    set(beak_clone_dir ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
 FetchContent_Declare(

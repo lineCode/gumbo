@@ -6,7 +6,7 @@ endif()
 
 FetchContent_Declare(
     beak-util
-    SOURCE_DIR ${EXTERNAL_DIR}/beak-util
+    SOURCE_DIR ${beak_clone_dir}/beak-util
     GIT_REPOSITORY git@github.com:Barath-Kannan/util.git 
     GIT_TAG master 
 )

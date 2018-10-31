@@ -7,6 +7,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include "beak/gumbo/detail/ptree_node_helpers.hpp"
 #include "beak/gumbo/enums.hpp"
+#include "beak/util/function_ref.hpp"
 
 namespace beak::gumbo {
 
@@ -59,12 +60,15 @@ struct parse_options {
     web_namespace _web_namespace{web_namespace::HTML};
 };
 
+using gumbo_tree = boost::property_tree::basic_ptree<std::string, node>;
+
 struct parse_output {
-    using tree = boost::property_tree::basic_ptree<std::string, node>;
     explicit parse_output(std::string_view html, parse_options = parse_options{});
-    tree _document;
+    gumbo_tree _document;
 };
 
-auto get_text(const parse_output::tree&) -> std::string;
+auto get_text(const gumbo_tree&) -> std::string;
+auto get_attribute(const gumbo_tree&, util::function_ref<bool(const attribute&)>)
+    -> boost::optional<const attribute&>;
 
 } // namespace beak::gumbo

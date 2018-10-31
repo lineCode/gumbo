@@ -42,9 +42,9 @@ auto get_document(const GumboDocument& d) -> document
         static_cast<doctype_quirks_mode>(d.doc_type_quirks_mode)};
 }
 
-auto get_attributes(const GumboElement& e) -> std::pair<std::string, parse_output::tree>
+auto get_attributes(const GumboElement& e) -> std::pair<std::string, gumbo_tree>
 {
-    parse_output::tree tree;
+    gumbo_tree tree;
     for (int i = 0; i < static_cast<int>(e.attributes.length); ++i) {
         const auto a = static_cast<GumboAttribute*>(e.attributes.data[i]);
         const auto name = std::string{a->name};
@@ -57,7 +57,7 @@ auto get_attributes(const GumboElement& e) -> std::pair<std::string, parse_outpu
                 std::string_view{a->original_name.data, a->original_name.length},
                 std::string{a->value},
                 std::string_view{a->original_value.data, a->original_value.length}}};
-        tree.push_back(std::pair{name, parse_output::tree{std::move(n)}});
+        tree.push_back(std::pair{name, gumbo_tree{std::move(n)}});
     }
     return {"<xmlattr>", tree};
 }
@@ -96,9 +96,9 @@ auto get_node_type(const GumboNode& node) -> std::variant<document, text, elemen
     throw std::runtime_error("unhandled node type");
 }
 
-auto traverse(const GumboNode& root, const parse_options& opts) -> std::pair<std::string, parse_output::tree>
+auto traverse(const GumboNode& root, const parse_options& opts) -> std::pair<std::string, gumbo_tree>
 {
-    using tree_type = parse_output::tree;
+    using tree_type = gumbo_tree;
     tree_type tree{node{boost::none, static_cast<parse_flags::flags>(root.parse_flags), get_node_type(root)}};
     if (std::holds_alternative<element>(tree.data()._value)) {
         tree.push_back(get_attributes(root.v.element));
@@ -152,9 +152,9 @@ parse_output::parse_output(std::string_view html, parse_options o)
         output);
 }
 
-auto get_text(const parse_output::tree& tree) -> std::string
+auto get_text(const gumbo_tree& tree) -> std::string
 {
-    using gumbo_tree = parse_output::tree;
+    using gumbo_tree = gumbo_tree;
     using matching_tree_set = std::vector<std::reference_wrapper<const gumbo_tree>>;
     matching_tree_set text_nodes;
     util::dfs(tree, std::back_inserter(text_nodes), [](const gumbo_tree& t) {
@@ -169,6 +169,23 @@ auto get_text(const parse_output::tree& tree) -> std::string
         builder += text_node._text;
     }
     return builder;
+}
+
+auto get_attribute(const gumbo_tree& tree, util::function_ref<bool(const attribute&)> pred)
+    -> boost::optional<const attribute&>
+{
+    using gumbo_tree = gumbo_tree;
+    const auto attribute_tree = tree.find("<xmlattr>");
+    if (attribute_tree == tree.not_found()) return boost::none;
+    const auto value_view = attribute_tree->second | boost::adaptors::map_values;
+    const auto it = std::find_if(value_view.begin(), value_view.end(), [&](const gumbo_tree& v) {
+        const auto& attribute = std::get<gumbo::attribute>(v.data()._value);
+        return pred(attribute);
+    });
+    if (it == value_view.end()) return boost::none;
+    const auto& value = it->data()._value;
+    assert(std::holds_alternative<gumbo::attribute>(value));
+    return std::get<gumbo::attribute>(value);
 }
 
 } // namespace beak::gumbo
